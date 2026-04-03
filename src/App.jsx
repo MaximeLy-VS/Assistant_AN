@@ -239,7 +239,7 @@ Renvoie le résultat au format JSON.`;
               </div>
               <div className="flex flex-col">
                 <h1 className="text-L font-black tracking-tight text-slate-800">Assistant d'accessibilité des images</h1>
-                <p className="text-slate-200 text-[9px] tracking-[0.2em]">Générez des alternatives et descriptions</p>
+                <p className="text-slate-500 text-[10px] tracking-[0.2em]">Générez des alternatives et descriptions</p>
               </div>
             </div>
           </header>
