@@ -10,7 +10,6 @@ const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 const copyToClipboard = (text) => {
   const textArea = document.createElement("textarea");
   textArea.value = text;
-  // Éviter le scroll vers le bas
   textArea.style.top = "0";
   textArea.style.left = "0";
   textArea.style.position = "fixed";
@@ -68,7 +67,7 @@ export default function App() {
         if (items[i].type.indexOf('image') !== -1) {
           const blob = items[i].getAsFile();
           handleFile(blob);
-          break; // On ne prend que la première image
+          break;
         }
       }
     };
@@ -96,8 +95,8 @@ export default function App() {
   };
 
   const processImage = async (imageFile) => {
-    if (!apiKey) {
-      setError("Erreur de configuration : Clé API introuvable. Si vous êtes sur GitHub Pages, vérifiez vos secrets de repository.");
+    if (!apiKey || apiKey === "") {
+      setError("Erreur de configuration : Clé API introuvable ou invalide. Vérifiez vos secrets sur GitHub.");
       return;
     }
 
@@ -109,7 +108,6 @@ export default function App() {
       const base64Data = await new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onloadend = () => {
-          // Extraire seulement la partie base64 après la virgule
           const base64String = reader.result.split(',')[1];
           resolve(base64String);
         };
@@ -123,28 +121,27 @@ export default function App() {
 
     } catch (err) {
       console.error("Erreur d'analyse:", err);
-      setError("Une erreur est survenue lors de l'analyse de l'image. Veuillez réessayer.");
+      setError("Une erreur est survenue lors de l'analyse. Vérifiez que votre clé API est bien issue de Google AI Studio.");
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchWithRetry = async (base64Data, mimeType, maxRetries = 5) => {
-    const delays = [1000, 2000, 4000, 8000, 16000];
+  const fetchWithRetry = async (base64Data, mimeType, maxRetries = 3) => {
+    const delays = [1000, 2000, 4000];
     
-    // Prompt détaillé reprenant VOS recommandations d'accessibilité
     const promptText = `En tant qu'expert en accessibilité numérique (normes RGAA, WCAG), analyse l'image fournie et extrais les informations suivantes pour rendre cette image accessible.
 
 RÈGLES D'ACCESSIBILITÉ À RESPECTER STRICTEMENT :
 1. Titre : Un titre concis pour l'image.
 2. Alternative textuelle (alt) : 
    - Si l'image est SIMPLE (porteuse d'informations simples) : l'alternative indique le contenu visuel et textuel. Elle doit faire moins de 80 caractères (idéalement) et maximum 125 caractères.
-   - Si l'image est COMPLEXE (graphique, schéma complexe, etc.) : l'alternative introduit l'image et indique qu'une description détaillée suit (ex: "Schéma du processus d'achat, description détaillée adjacente").
+   - Si l'image est COMPLEXE (graphique, schéma complexe, etc.) : l'alternative introduit l'image et indique qu'une description détaillée suit.
 3. Description détaillée : 
    - Nécessaire pour les images complexes.
    - DOIT OBLIGATOIREMENT commencer par le titre de l'image.
-   - Doit reprendre l'ensemble des informations de l'image, structurée autant que nécessaire (paragraphes, tirets).
-   - Si l'image est très simple et ne nécessite pas de description détaillée, indique "Non requise pour cette image simple."
+   - Doit reprendre l'ensemble des informations de l'image, structurée autant que nécessaire.
+   - Si l'image est très simple, indique "Non requise pour cette image simple."
 
 Renvoie uniquement un objet JSON structuré.`;
 
@@ -177,9 +174,12 @@ Renvoie uniquement un objet JSON structuré.`;
       }
     };
 
+    // Utilisation du modèle stable gemini-1.5-flash
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+
     for (let i = 0; i < maxRetries; i++) {
       try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+        const response = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -203,7 +203,6 @@ Renvoie uniquement un objet JSON structuré.`;
     }
   };
 
-  // Drag & Drop handlers
   const onDragOver = useCallback((e) => {
     e.preventDefault();
     setIsDragging(true);
@@ -226,9 +225,7 @@ Renvoie uniquement un objet JSON structuré.`;
     <div className="min-h-screen bg-gray-50 text-gray-900 font-sans p-4 md:p-8">
       <div className="max-w-5xl mx-auto space-y-8">
         
-        {/* En-tête */}
         <header className="text-center space-y-3 relative">
-          
           <div className="inline-flex items-center justify-center p-3 bg-blue-100 text-blue-700 rounded-2xl mb-2 mt-8 md:mt-0">
             <ImageIcon size={32} />
           </div>
@@ -242,7 +239,6 @@ Renvoie uniquement un objet JSON structuré.`;
 
         <div className="grid md:grid-cols-12 gap-8 items-start">
           
-          {/* Zone d'Upload (Gauche) */}
           <div className="md:col-span-5 space-y-4">
             <div
               onDragOver={onDragOver}
@@ -304,7 +300,6 @@ Renvoie uniquement un objet JSON structuré.`;
             )}
           </div>
 
-          {/* Zone de Résultat (Droite) */}
           <div className="md:col-span-7">
             {loading ? (
               <div className="h-full min-h-[300px] bg-white border border-gray-200 rounded-2xl flex flex-col items-center justify-center p-8 shadow-sm">
@@ -324,7 +319,6 @@ Renvoie uniquement un objet JSON structuré.`;
                 </div>
 
                 <div className="p-6 space-y-8">
-                  {/* Titre */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider">1. Titre de l'image</h3>
@@ -335,7 +329,6 @@ Renvoie uniquement un objet JSON structuré.`;
                     </div>
                   </div>
 
-                  {/* Alternative textuelle */}
                   <div className="space-y-3 relative">
                     <div className="flex items-center justify-between">
                       <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider">2. Alternative textuelle (alt)</h3>
@@ -345,7 +338,6 @@ Renvoie uniquement un objet JSON structuré.`;
                       <p className="text-gray-800">{result.alternative_textuelle}</p>
                     </div>
                     
-                    {/* Indicateur de longueur pour l'accessibilité */}
                     <div className="flex items-start gap-2 mt-2">
                       <Info size={16} className={`shrink-0 mt-0.5 ${result.alternative_textuelle.length > 125 ? 'text-amber-500' : 'text-blue-500'}`} />
                       <p className="text-xs text-gray-500">
@@ -361,7 +353,6 @@ Renvoie uniquement un objet JSON structuré.`;
                     </div>
                   </div>
 
-                  {/* Description détaillée */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider">3. Description détaillée</h3>
