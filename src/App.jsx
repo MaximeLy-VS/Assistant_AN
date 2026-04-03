@@ -3,7 +3,7 @@ import { Upload, Image as ImageIcon, Copy, Check, AlertCircle, Loader2, Info } f
 
 // --- CONFIGURATION API ---
 // L'environnement d'exécution de test (ici) injecte la clé automatiquement si elle est vide.
-const apiKey = ""; 
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
 // --- UTILS ---
 // Fonction robuste pour copier dans le presse-papier (contournement des restrictions iframe)
