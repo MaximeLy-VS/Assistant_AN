@@ -180,6 +180,7 @@ Renvoie le résultat au format JSON.`;
   };
 
   return (
+<div className="min-h-screen flex items-center justify-center p-4 font-sans text-slate-900 bg-cover bg-center bg-no-repeat bg-fixed"
   <div className="max-w-4xl w-full bg-white rounded-[2.5rem] shadow-2xl shadow-indigo-100 overflow-hidden flex flex-col md:flex-row border border-slate-100 animate-fade-slide-up">
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans p-4 md:p-8">
       <div className="max-w-5xl mx-auto space-y-8">
@@ -287,5 +288,6 @@ Renvoie le résultat au format JSON.`;
       </div>
     </div>
   </div>
+</div>
   );
 }
