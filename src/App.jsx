@@ -186,14 +186,7 @@ Renvoie le résultat au format JSON.`;
         </header>
 
         <div className="max-w-5xl w-full bg-white rounded-[2.5rem] shadow-2xl shadow-indigo-100 overflow-hidden flex flex-col md:flex-row border border-slate-100 animate-fade-slide-up">
-            <div className="flex items-center gap-4 mb-3">
-              <div className="p-3 bg-indigo-600 rounded-2xl shadow-xl shadow-indigo-200">
-                <ImageIcon className="text-white" size={24} />
-              </div>
-              <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Assistant Accessibilité</h1>
-              <p className="text-slate-600 max-w-2xl mx-auto">Générez des alternatives et descriptions conformes au RGAA et à vos guides internes.</p>
-            </div>
-          <div className="w-full md:w-1/2 bg-slate-50/50 p-10 flex flex-col border-b md:border-b-0 md:border-r border-slate-100">
+
             <div
               onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
               onDragLeave={() => setIsDragging(false)}
@@ -208,6 +201,14 @@ Renvoie le résultat au format JSON.`;
 
               {previewUrl ? (
                 <div className="w-full space-y-4">
+                              <div className="flex items-center gap-4 mb-3">
+              <div className="p-3 bg-indigo-600 rounded-2xl shadow-xl shadow-indigo-200">
+                <ImageIcon className="text-white" size={24} />
+              </div>
+              <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Assistant Accessibilité</h1>
+              <p className="text-slate-600 max-w-2xl mx-auto">Générez des alternatives et descriptions conformes au RGAA et à vos guides internes.</p>
+            </div>
+          <div className="w-full md:w-1/2 bg-slate-50/50 p-10 flex flex-col border-b md:border-b-0 md:border-r border-slate-100">
                   <div className="relative group cursor-pointer" onClick={() => document.getElementById('file-input').click()}>
                     <img src={previewUrl} alt="Preview" className="max-h-[300px] mx-auto rounded-xl shadow-md" />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl text-white font-medium">
