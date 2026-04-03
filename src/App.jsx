@@ -5,6 +5,7 @@ import { Upload, Image as ImageIcon, Copy, Check, AlertCircle, Loader2, Info } f
 // L'environnement d'exécution de test (ici) injecte la clé automatiquement si elle est vide.
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
+
 // --- UTILS ---
 const copyToClipboard = (text) => {
   const textArea = document.createElement("textarea");
@@ -28,18 +29,22 @@ const copyToClipboard = (text) => {
 
 const CopyButton = ({ text }) => {
   const [copied, setCopied] = useState(false);
+
   const handleCopy = () => {
     if (copyToClipboard(text)) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
   };
+
   return (
     <button
       onClick={handleCopy}
-      className="p-2 text-slate-400 hover:text-indigo-600 transition-colors rounded-lg hover:bg-indigo-50"
+      className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
+      title="Copier le texte"
     >
-      {copied ? <Check size={18} className="text-green-600" /> : <Copy size={18} />}
+      {copied ? <Check size={16} className="text-green-600" /> : <Copy size={16} />}
+      {copied ? <span className="text-green-600">Copié</span> : 'Copier'}
     </button>
   );
 };
@@ -80,9 +85,8 @@ export default function App() {
   };
 
   const processImage = async (imageFile) => {
-    // Sur GitHub, assurez-vous que apiKey récupère bien la valeur de Vite
     if (!apiKey || apiKey === "") {
-      setError("Clé API manquante. Sur GitHub, remplacez la ligne 7 par : const apiKey = import.meta.env.VITE_GEMINI_API_KEY.trim();");
+      setError("Erreur de configuration : Clé API introuvable. Vérifiez vos secrets sur GitHub.");
       return;
     }
     setLoading(true);
@@ -99,7 +103,8 @@ export default function App() {
       const response = await fetchWithRetry(base64Data, imageFile.type);
       setResult(response);
     } catch (err) {
-      setError("Erreur d'analyse. Vérifiez votre clé API ou vos quotas.");
+      console.error("Erreur d'analyse:", err);
+      setError("Une erreur est survenue lors de l'analyse. Vérifiez vos quotas ou votre clé API.");
     } finally {
       setLoading(false);
     }
@@ -107,6 +112,8 @@ export default function App() {
 
   const fetchWithRetry = async (base64Data, mimeType, maxRetries = 3) => {
     const delays = [1000, 2000, 4000];
+    
+    // PROMPT OPTIMISÉ AVEC VOS PRÉCONISATIONS ET RGAA
     const promptText = `Tu es un expert en accessibilité numérique (RGAA 4.1.2, WCAG 2.2). Ton rôle est d'analyser cette image pour produire des textes d'accessibilité parfaits.
 
 Étape 1 : Détermine si l'image est SIMPLE ou COMPLEXE.
@@ -157,8 +164,12 @@ Renvoie le résultat au format JSON.`;
 
     for (let i = 0; i < maxRetries; i++) {
       try {
-        const response = await fetch(url, { method: 'POST', body: JSON.stringify(payload) });
-        if (!response.ok) throw new Error();
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!response.ok) throw new Error(`API Error: ${response.status}`);
         const data = await response.json();
         return JSON.parse(data.candidates[0].content.parts[0].text);
       } catch (err) {
@@ -169,136 +180,102 @@ Renvoie le résultat au format JSON.`;
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center p-4 md:p-12 font-sans selection:bg-indigo-100">
-      <div className="w-full max-w-6xl bg-white rounded-[3rem] shadow-[0_30px_100px_rgba(0,0,0,0.06)] flex flex-col md:flex-row overflow-hidden min-h-[750px]">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans p-4 md:p-8">
+      <div className="max-w-5xl mx-auto space-y-8">
         
-        {/* --- PARTIE GAUCHE : IMPORT ET RÉGLAGES --- */}
-        <div className="md:w-1/2 p-10 md:p-16 flex flex-col border-r border-slate-50">
-          
-          {/* Header */}
-          <div className="flex items-center gap-4 mb-12">
-            <div className="w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-indigo-100">
-              <ImageIcon size={28} />
-            </div>
-            <div>
-              <h1 className="text-2xl font-black text-slate-800 leading-tight">Assistant Accessibilité</h1>
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em]">Analyseur de contenu</p>
-            </div>
+        <header className="text-center space-y-3">
+          <div className="inline-flex items-center justify-center p-3 bg-blue-600 text-white rounded-2xl shadow-lg mb-2">
+            <ImageIcon size={32} />
           </div>
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Assistant Accessibilité</h1>
+          <p className="text-slate-600 max-w-2xl mx-auto">Générez des alternatives et descriptions conformes au RGAA et à vos guides internes.</p>
+        </header>
 
-          {/* Buttons Group */}
-          <div className="grid grid-cols-2 gap-4 mb-10">
-            <button 
-              onClick={() => document.getElementById('file-input').click()}
-              className="flex items-center justify-center gap-2 py-4 bg-white border border-slate-200 rounded-2xl text-xs font-bold text-slate-600 hover:bg-slate-50 transition-all shadow-sm"
+        <div className="grid md:grid-cols-12 gap-8 items-start">
+          <div className="md:col-span-5 space-y-4">
+            <div
+              onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+              onDragLeave={() => setIsDragging(false)}
+              onDrop={(e) => { e.preventDefault(); setIsDragging(false); handleFile(e.dataTransfer.files[0]); }}
+              className={`relative flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-3xl transition-all bg-white
+                ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-slate-300'}
+                ${previewUrl ? 'border-solid p-4' : 'hover:border-slate-400 cursor-pointer'}
+              `}
+              onClick={() => !previewUrl && document.getElementById('file-input').click()}
             >
-              <Upload size={18} className="text-indigo-500" /> Import
-            </button>
-            <button 
-              onClick={() => file && processImage(file)}
-              disabled={!file || loading}
-              className="flex items-center justify-center gap-2 py-4 bg-slate-100 rounded-2xl text-xs font-bold text-slate-500 hover:bg-slate-200 transition-all disabled:opacity-40"
-            >
-              <Wand2 size={18} /> Lancer l'analyse
-            </button>
-          </div>
+              <input id="file-input" type="file" accept="image/*" className="hidden" onChange={(e) => handleFile(e.target.files[0])} />
 
-          {/* Large Upload Zone */}
-          <div
-            onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-            onDragLeave={() => setIsDragging(false)}
-            onDrop={(e) => { e.preventDefault(); setIsDragging(false); handleFile(e.dataTransfer.files[0]); }}
-            onClick={() => !file && document.getElementById('file-input').click()}
-            className={`flex-1 flex flex-col items-center justify-center border-2 border-dashed rounded-[2.5rem] transition-all p-10 relative
-              ${isDragging ? 'border-indigo-400 bg-indigo-50/30' : 'border-slate-100'}
-              ${!file ? 'cursor-pointer hover:border-slate-200' : ''}
-            `}
-          >
-            <input id="file-input" type="file" accept="image/*" className="hidden" onChange={(e) => handleFile(e.target.files[0])} />
-            
-            <div className="w-20 h-20 bg-white shadow-lg shadow-slate-100 rounded-full flex items-center justify-center text-indigo-500 mb-6">
-              <Upload size={32} />
-            </div>
-            
-            <p className="text-lg font-extrabold text-slate-800 mb-1 text-center leading-tight">Déposez votre visuel</p>
-            <p className="text-xs text-slate-400 text-center">PNG, JPG ou WEBP supportés</p>
-
-            {error && (
-              <div className="absolute bottom-6 left-6 right-6 p-4 bg-red-50 text-red-600 text-[11px] font-bold rounded-2xl flex items-center gap-3 border border-red-100 shadow-sm">
-                <AlertCircle size={16} /> {error}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* --- PARTIE DROITE : APERÇU ET RÉSULTATS --- */}
-        <div className="md:w-1/2 p-10 md:p-16 flex flex-col bg-[#fafbfc] justify-center items-center">
-          
-          <div className="w-full max-w-md space-y-10">
-            
-            {/* Box Aperçu avec grille */}
-            <div className="aspect-square bg-white rounded-[2.5rem] shadow-[0_20px_60px_rgba(0,0,0,0.03)] flex items-center justify-center p-8 relative overflow-hidden">
-              {/* Fond à points (dotted pattern) */}
-              <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
-              
               {previewUrl ? (
-                <img src={previewUrl} alt="Preview" className="max-h-full max-w-full object-contain rounded-2xl z-10 shadow-sm" />
+                <div className="w-full space-y-4">
+                  <div className="relative group cursor-pointer" onClick={() => document.getElementById('file-input').click()}>
+                    <img src={previewUrl} alt="Preview" className="max-h-[300px] mx-auto rounded-xl shadow-md" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl text-white font-medium">
+                      Changer l'image
+                    </div>
+                  </div>
+                  
+                  <button
+                    onClick={(e) => { e.stopPropagation(); processImage(file); }}
+                    disabled={loading}
+                    className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md disabled:bg-slate-300 flex items-center justify-center gap-2"
+                  >
+                    {loading ? <Loader2 className="animate-spin" /> : <ImageIcon size={20} />}
+                    {loading ? "Analyse..." : "Lancer l'analyse"}
+                  </button>
+                </div>
               ) : (
-                <div className="text-center space-y-4 opacity-10 flex flex-col items-center">
-                  <ImageIcon size={80} strokeWidth={1.5} />
-                  <p className="text-sm font-black uppercase tracking-[0.3em]">Aperçu</p>
+                <div className="text-center py-12 space-y-4">
+                  <Upload className="mx-auto text-slate-400" size={48} />
+                  <p className="text-slate-500">Glissez une image ou cliquez ici</p>
                 </div>
               )}
             </div>
 
-            {/* Status et Contenu */}
-            {loading ? (
-              <div className="text-center space-y-4 py-4">
-                <div className="inline-flex items-center gap-3 bg-indigo-50 text-indigo-600 px-5 py-2 rounded-full text-[11px] font-black uppercase tracking-wider shadow-sm">
-                  <Loader2 size={14} className="animate-spin" /> Analyse en cours...
-                </div>
-              </div>
-            ) : result ? (
-              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                <div className="flex flex-col items-center gap-4">
-                  <div className="bg-emerald-50 text-emerald-600 px-5 py-2 rounded-full text-[11px] font-black uppercase tracking-wider flex items-center gap-3 shadow-sm border border-emerald-100">
-                    <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                    Analyse terminée
-                  </div>
-                  
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
-                    Format {file?.name.split('.').pop()} • Image {result.complexite}
-                  </p>
+            {error && <div className="p-4 bg-red-50 text-red-700 rounded-xl border border-red-100 text-sm flex gap-2"><AlertCircle size={16} />{error}</div>}
+          </div>
+
+          <div className="md:col-span-7">
+            {result ? (
+              <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden divide-y divide-slate-100">
+                <div className="p-6 bg-slate-50/50 flex justify-between items-center">
+                  <span className={`px-3 py-1 rounded-full text-xs font-bold ${result.complexite === 'SIMPLE' ? 'bg-green-100 text-green-700' : 'bg-purple-100 text-purple-700'}`}>
+                    IMAGE {result.complexite}
+                  </span>
                 </div>
 
-                {/* Carte de résultats compacte */}
-                <div className="bg-white p-7 rounded-[2rem] shadow-sm border border-slate-100 space-y-6">
-                  <div className="flex justify-between items-start gap-4">
-                    <div className="space-y-1.5 flex-1">
-                      <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Alternative (Alt)</p>
-                      <p className="text-sm font-medium text-slate-600 leading-relaxed italic line-clamp-3">"{result.alternative_textuelle}"</p>
+                <div className="p-6 space-y-6">
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center"><h3 className="text-xs font-bold text-slate-400 uppercase">1. Titre</h3><CopyButton text={result.titre} /></div>
+                    <div className="p-3 bg-slate-50 rounded-lg font-medium">{result.titre}</div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-xs font-bold text-slate-400 uppercase">2. Alternative (alt)</h3>
+                      <CopyButton text={result.alternative_textuelle} />
                     </div>
-                    <CopyButton text={result.alternative_textuelle} />
+                    <div className="p-3 bg-slate-50 rounded-lg">{result.alternative_textuelle}</div>
+                    <div className="flex items-center gap-1.5 text-[10px] text-slate-400">
+                      <Info size={12} />
+                      {result.alternative_textuelle.length} caractères 
+                      {result.alternative_textuelle.length > 125 && " (Attention : dépasse la limite Moodle)"}
+                    </div>
                   </div>
-                  
-                  <div className="pt-4 border-t border-slate-50 space-y-1.5">
-                    <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Titre généré</p>
-                    <p className="text-xs font-bold text-slate-800">{result.titre}</p>
+
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-xs font-bold text-slate-400 uppercase">3. Description détaillée</h3>
+                      <CopyButton text={result.description_detaillee} />
+                    </div>
+                    <div className="p-4 bg-slate-50 rounded-lg prose prose-slate prose-sm max-w-none whitespace-pre-wrap">
+                      {result.description_detaillee}
+                    </div>
                   </div>
                 </div>
-
-                {/* Bouton pour la description détaillée */}
-                <button 
-                  onClick={() => copyToClipboard(result.description_detaillee)}
-                  className="group w-full py-5 bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-700 rounded-[1.5rem] text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3"
-                >
-                  <Copy size={16} className="group-hover:scale-110 transition-transform" /> 
-                  Copier la description détaillée
-                </button>
               </div>
-            ) : (
-              <div className="text-center pt-4">
-                <p className="text-[11px] font-black text-slate-200 uppercase tracking-[0.4em]">Maxime Lyon</p>
+            ) : !loading && (
+              <div className="h-full min-h-[300px] border-2 border-dashed border-slate-200 rounded-3xl flex items-center justify-center text-slate-400 italic">
+                En attente d'analyse...
               </div>
             )}
           </div>
