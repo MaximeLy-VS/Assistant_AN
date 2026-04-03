@@ -207,7 +207,7 @@ Renvoie le résultat au format JSON.`;
                 </div>
                 <div className="">
                   <h1 className="text-4x3 font-black tracking-tight text-slate-800">Assistant accessibilité des images</h1>
-                  <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em]">Générez des alternatives et descriptions</p>
+                  <p className="text-slate-400 text-[10px] font-bold tracking-[0.2em]">Générez des alternatives et descriptions</p>
                 </div>
               </div>
             </header>
@@ -264,13 +264,13 @@ Renvoie le résultat au format JSON.`;
 
                 <div className="p-6 space-y-6">
                   <div className="space-y-2">
-                    <div className="flex justify-between items-center"><h3 className="text-xs font-bold text-slate-400 uppercase">1. Titre</h3><CopyButton text={result.titre} /></div>
+                    <div className="flex justify-between items-center"><h3 className="text-xs font-bold text-slate-400">1. Titre</h3><CopyButton text={result.titre} /></div>
                     <div className="p-3 bg-slate-50 rounded-lg font-medium">{result.titre}</div>
                   </div>
 
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                      <h3 className="text-xs font-bold text-slate-400 uppercase">2. Alternative (alt)</h3>
+                      <h3 className="text-xs font-bold text-slate-400">2. Alternative (alt)</h3>
                       <CopyButton text={result.alternative_textuelle} />
                     </div>
                     <div className="p-3 bg-slate-50 rounded-lg">{result.alternative_textuelle}</div>
@@ -283,7 +283,7 @@ Renvoie le résultat au format JSON.`;
 
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                      <h3 className="text-xs font-bold text-slate-400 uppercase">3. Description détaillée</h3>
+                      <h3 className="text-xs font-bold text-slate-400">3. Description détaillée</h3>
                       <CopyButton text={result.description_detaillee} />
                     </div>
                     <div className="p-4 bg-slate-50 rounded-lg prose prose-slate prose-sm max-w-none whitespace-pre-wrap">
