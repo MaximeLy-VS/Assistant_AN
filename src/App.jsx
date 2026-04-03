@@ -89,9 +89,6 @@ export default function App() {
     // Créer une URL pour la prévisualisation
     const objectUrl = URL.createObjectURL(selectedFile);
     setPreviewUrl(objectUrl);
-    
-    // Lancer l'analyse automatiquement
-    processImage(selectedFile);
   };
 
   const processImage = async (imageFile) => {
@@ -174,7 +171,7 @@ Renvoie uniquement un objet JSON structuré.`;
       }
     };
 
-    // Utilisation du modèle stable gemini-1.5-flash
+    // Utilisation du modèle gemini-2.5-flash
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
     for (let i = 0; i < maxRetries; i++) {
@@ -244,11 +241,13 @@ Renvoie uniquement un objet JSON structuré.`;
               onDragOver={onDragOver}
               onDragLeave={onDragLeave}
               onDrop={onDrop}
-              className={`relative flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-2xl transition-all bg-white cursor-pointer overflow-hidden
-                ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'}
-                ${previewUrl ? 'min-h-[300px] border-solid border-gray-200 shadow-sm p-2' : 'min-h-[300px]'}
+              className={`relative flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-2xl transition-all bg-white overflow-hidden
+                ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}
+                ${previewUrl ? 'min-h-[300px] border-solid border-gray-200 shadow-sm p-4' : 'min-h-[300px] hover:border-gray-400 cursor-pointer'}
               `}
-              onClick={() => document.getElementById('file-input').click()}
+              onClick={() => {
+                if (!previewUrl) document.getElementById('file-input').click();
+              }}
             >
               <input
                 id="file-input"
@@ -263,18 +262,44 @@ Renvoie uniquement un objet JSON structuré.`;
               />
 
               {previewUrl ? (
-                <div className="relative w-full h-full flex flex-col group">
-                  <img 
-                    src={previewUrl} 
-                    alt="Prévisualisation" 
-                    className="max-h-[400px] object-contain rounded-xl w-full"
-                  />
-                  <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
-                    <p className="text-white font-medium flex items-center gap-2">
-                      <Upload size={20} />
-                      Changer l'image
-                    </p>
+                <div className="w-full flex flex-col gap-4">
+                  <div 
+                    className="relative w-full flex flex-col group cursor-pointer"
+                    onClick={() => document.getElementById('file-input').click()}
+                  >
+                    <img 
+                      src={previewUrl} 
+                      alt="Prévisualisation" 
+                      className="max-h-[320px] object-contain rounded-xl w-full"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                      <p className="text-white font-medium flex items-center gap-2">
+                        <Upload size={20} />
+                        Changer l'image
+                      </p>
+                    </div>
                   </div>
+                  
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      processImage(file);
+                    }}
+                    disabled={loading}
+                    className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 size={20} className="animate-spin" />
+                        Analyse en cours...
+                      </>
+                    ) : (
+                      <>
+                        <ImageIcon size={20} />
+                        Lancer l'analyse
+                      </>
+                    )}
+                  </button>
                 </div>
               ) : (
                 <div className="text-center space-y-4 pointer-events-none">
