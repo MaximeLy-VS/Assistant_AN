@@ -28,22 +28,18 @@ const copyToClipboard = (text) => {
 
 const CopyButton = ({ text }) => {
   const [copied, setCopied] = useState(false);
-
   const handleCopy = () => {
     if (copyToClipboard(text)) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
   };
-
   return (
     <button
       onClick={handleCopy}
-      className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
-      title="Copier le texte"
+      className="p-2 text-slate-400 hover:text-indigo-600 transition-colors rounded-lg hover:bg-indigo-50"
     >
-      {copied ? <Check size={16} className="text-green-600" /> : <Copy size={16} />}
-      {copied ? <span className="text-green-600">Copié</span> : 'Copier'}
+      {copied ? <Check size={18} className="text-green-600" /> : <Copy size={18} />}
     </button>
   );
 };
@@ -85,7 +81,7 @@ export default function App() {
 
   const processImage = async (imageFile) => {
     if (!apiKey || apiKey === "") {
-      setError("Erreur de configuration : Clé API introuvable. Vérifiez vos secrets sur GitHub.");
+      setError("Clé API manquante. Vérifiez vos secrets GitHub.");
       return;
     }
     setLoading(true);
@@ -102,8 +98,7 @@ export default function App() {
       const response = await fetchWithRetry(base64Data, imageFile.type);
       setResult(response);
     } catch (err) {
-      console.error("Erreur d'analyse:", err);
-      setError("Une erreur est survenue lors de l'analyse. Vérifiez vos quotas ou votre clé API.");
+      setError("Erreur d'analyse. Vérifiez votre clé API.");
     } finally {
       setLoading(false);
     }
@@ -111,30 +106,11 @@ export default function App() {
 
   const fetchWithRetry = async (base64Data, mimeType, maxRetries = 3) => {
     const delays = [1000, 2000, 4000];
-    
-    // PROMPT OPTIMISÉ AVEC VOS PRÉCONISATIONS ET RGAA
-    const promptText = `Tu es un expert en accessibilité numérique (RGAA 4.1.2, WCAG 2.2). Ton rôle est d'analyser cette image pour produire des textes d'accessibilité parfaits.
-
-Étape 1 : Détermine si l'image est SIMPLE ou COMPLEXE.
-- SIMPLE : L'information peut être contenue dans une phrase courte.
-- COMPLEXE : Elle contient des données, une structure (liste, titres) ou trop d'informations pour une phrase courte.
-
-Étape 2 : Rédige selon ces consignes strictes :
-
-1. TITRE : Un titre descriptif et court.
-
-2. ALTERNATIVE TEXTUELLE (attribut alt) :
-   - Image SIMPLE : Doit indiquer le contenu visuel et textuel. Limite idéale : 80 caractères. Limite absolue : 125 caractères. Doit être une phrase courte unique.
-   - Image COMPLEXE : Doit introduire l'image, préciser son titre et mentionner explicitement qu'une description détaillée est disponible (ex: "Graphique de l'évolution des ventes, description détaillée disponible ci-après").
-
-3. DESCRIPTION DÉTAILLÉE :
-   - Obligatoire pour les images COMPLEXES.
-   - Doit IMPÉRATIVEMENT commencer par le titre de l'image.
-   - Doit se limiter à peu près à 400 caractères, 800 maximum si nécessaire.
-   - FOCUS RGAA : Concentre-toi sur le SENS et le MESSAGE. Ne décris les formes et les couleurs QUE si elles sont porteuses d'information (ex: code couleur d'une légende). Sinon, privilégie les données et la logique.
-   - Si l'image est SIMPLE : Indique "Non requise pour cette image simple."
-
-Renvoie le résultat au format JSON.`;
+    const promptText = `Tu es un expert en accessibilité numérique (RGAA 4.1.2, WCAG 2.2). Analyse cette image.
+    1. TITRE : Un titre descriptif et court.
+    2. ALTERNATIVE : 80-125 chars. Si complexe, intro vers description.
+    3. DESCRIPTION : Structurée (Markdown), commence par le titre. Focus sur le SENS.
+    Renvoie du JSON : {titre, alternative_textuelle, description_detaillee, complexite}`;
 
     const payload = {
       contents: [{
@@ -163,12 +139,8 @@ Renvoie le résultat au format JSON.`;
 
     for (let i = 0; i < maxRetries; i++) {
       try {
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        if (!response.ok) throw new Error(`API Error: ${response.status}`);
+        const response = await fetch(url, { method: 'POST', body: JSON.stringify(payload) });
+        if (!response.ok) throw new Error();
         const data = await response.json();
         return JSON.parse(data.candidates[0].content.parts[0].text);
       } catch (err) {
