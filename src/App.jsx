@@ -130,8 +130,7 @@ export default function App() {
 3. DESCRIPTION DÉTAILLÉE :
    - Obligatoire pour les images COMPLEXES.
    - Doit IMPÉRATIVEMENT commencer par le titre de l'image.
-   - Doit se limiter à peu près à 400 caractères, 600 maximum.
-   - Doit être structurée (titres, paragraphes, listes à puces en Markdown).
+   - Doit se limiter à peu près à 400 caractères, 800 maximum si nécessaire.
    - FOCUS RGAA : Concentre-toi sur le SENS et le MESSAGE. Ne décris les formes et les couleurs QUE si elles sont porteuses d'information (ex: code couleur d'une légende). Sinon, privilégie les données et la logique.
    - Si l'image est SIMPLE : Indique "Non requise pour cette image simple."
 
