@@ -181,7 +181,7 @@ Renvoie le résultat au format JSON.`;
 
   return (
 <div className="min-h-screen flex items-center justify-center p-4 font-sans text-slate-900 bg-cover bg-center bg-no-repeat bg-fixed">
-  <div className="max-w-4xl w-full bg-white rounded-[2.5rem] shadow-2xl shadow-indigo-100 overflow-hidden flex flex-col md:flex-row border border-slate-100 animate-fade-slide-up">
+  <div className="max-w-4xl bg-white rounded-[2.5rem] shadow-2xl shadow-indigo-100 overflow-hidden flex flex-col md:flex-row border border-slate-100 animate-fade-slide-up">
     <div className="bg-slate-50 text-slate-900 font-sans p-4 md:p-8">
       <div className="max-w-5xl mx-auto space-y-8">
         <div className="grid md:grid-cols-12 gap-8 items-start">
@@ -192,8 +192,8 @@ Renvoie le résultat au format JSON.`;
                   <ImageIcon className="text-white" size={24} />
                 </div>
                 <div className="">
-                  <h1 className="text-2xl font-black tracking-tight text-slate-800">Assistant Accessibilité</h1>
-                  <p className="text-slate-400 text-[8px] font-bold uppercase tracking-[0.2em]">Générez des alternatives et descriptions</p>
+                  <h1 className="text-2xl font-black tracking-tight text-slate-800">Assistant accessibilité des images</h1>
+                  <p className="text-slate-400 text-[8px] font-bold uppercase tracking-[0.2em]">Générez des alternatives et descriptions d'images</p>
                 </div>
               </div>
             </header>
