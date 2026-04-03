@@ -27,7 +27,8 @@ jobs:
           node-version: 24 # Mise à jour de la version 20 vers la 24
           
       - name: Install dependencies
-        run: npm install
+        # Force l'installation des dépendances de base ET de lucide-react au cas où il manquerait dans package.json
+        run: npm install && npm install lucide-react
         
       - name: Build project
         run: npm run build
