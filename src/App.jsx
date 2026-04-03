@@ -182,17 +182,20 @@ Renvoie le résultat au format JSON.`;
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans p-4 md:p-8">
       <div className="max-w-5xl mx-auto space-y-8">
-        
-        <header className="text-center space-y-3">
-          <div className="inline-flex items-center justify-center p-3 bg-blue-600 text-white rounded-2xl shadow-lg mb-2">
-            <ImageIcon size={32} />
-          </div>
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Assistant Accessibilité</h1>
-          <p className="text-slate-600 max-w-2xl mx-auto">Générez des alternatives et descriptions conformes au RGAA et à vos guides internes.</p>
-        </header>
-
         <div className="grid md:grid-cols-12 gap-8 items-start">
           <div className="md:col-span-5 space-y-4">
+            <header className="mb-8 animate-fade-slide-up">
+              <div className="flex items-center gap-4 mb-3">
+                <div className="p-3 bg-indigo-600 rounded-2xl shadow-xl shadow-indigo-200">
+                  <ImageIcon className="text-white" size={24} />
+                </div>
+                <div className="">
+                  <h1 className="text-2xl font-black tracking-tight text-slate-800">Assistant Accessibilité</h1>
+                  <p className="text-slate-400 text-[8px] font-bold uppercase tracking-[0.2em]">Générez des alternatives et descriptions</p>
+                </div>
+              </div>
+            </header>
+
             <div
               onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
               onDragLeave={() => setIsDragging(false)}
