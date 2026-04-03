@@ -186,7 +186,8 @@ Renvoie le résultat au format JSON.`;
         </header>
 
         <div className="max-w-5xl w-full bg-white rounded-[2.5rem] shadow-2xl shadow-indigo-100 overflow-hidden flex flex-col md:flex-row border border-slate-100 animate-fade-slide-up">
-
+                <div className="w-full space-y-4">
+                              
             <div
               onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
               onDragLeave={() => setIsDragging(false)}
@@ -200,8 +201,7 @@ Renvoie le résultat au format JSON.`;
               <input id="file-input" type="file" accept="image/*" className="hidden" onChange={(e) => handleFile(e.target.files[0])} />
 
               {previewUrl ? (
-                <div className="w-full space-y-4">
-                              <div className="flex items-center gap-4 mb-3">
+            <div className="flex items-center gap-4 mb-3">
               <div className="p-3 bg-indigo-600 rounded-2xl shadow-xl shadow-indigo-200">
                 <ImageIcon className="text-white" size={24} />
               </div>
