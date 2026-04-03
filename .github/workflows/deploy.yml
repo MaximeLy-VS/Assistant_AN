@@ -27,8 +27,8 @@ jobs:
           node-version: 24 # Mise à jour de la version 20 vers la 24
           
       - name: Install dependencies
-        # Force l'installation des dépendances manquantes pour le style et les icônes (mise à jour pour Tailwind v4)
-        run: npm install && npm install lucide-react tailwindcss @tailwindcss/postcss postcss autoprefixer @tailwindcss/typography
+        # Force l'installation de Tailwind CSS version 3 pour garantir la compatibilité avec notre configuration
+        run: npm install && npm install lucide-react tailwindcss@^3.4.0 postcss autoprefixer @tailwindcss/typography
         
       - name: Build project
         run: npm run build
