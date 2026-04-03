@@ -10,6 +10,10 @@ permissions:
   pages: write
   id-token: write
 
+# Ajout de la variable d'environnement globale pour forcer Node 24
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,10 +24,10 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24 # Mise à jour de la version 20 vers la 24
           
       - name: Install dependencies
-        run: npm ci
+        run: npm install
         
       - name: Build project
         run: npm run build
