@@ -183,14 +183,14 @@ Renvoie le résultat au format JSON.`;
       <div className="max-w-5xl mx-auto space-y-8">
         
         <header className="text-center space-y-3">
-          <div className="inline-flex items-center justify-center p-3 bg-blue-600 text-white rounded-2xl shadow-lg mb-2">
-            <ImageIcon size={32} />
+        </header>
+
+        <div className="max-w-5xl w-full bg-white rounded-[2.5rem] shadow-2xl shadow-indigo-100 overflow-hidden flex flex-col md:flex-row border border-slate-100 animate-fade-slide-up">
+           <div className="inline-flex items-center justify-center p-3 bg-blue-600 text-white rounded-2xl shadow-lg mb-2">
+          <ImageIcon size={32} />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Assistant Accessibilité</h1>
           <p className="text-slate-600 max-w-2xl mx-auto">Générez des alternatives et descriptions conformes au RGAA et à vos guides internes.</p>
-        </header>
-
-        <div className="max-w-4xl w-full bg-white rounded-[2.5rem] shadow-2xl shadow-indigo-100 overflow-hidden flex flex-col md:flex-row border border-slate-100 animate-fade-slide-up">
           <div className="w-full md:w-1/2 bg-slate-50/50 p-10 flex flex-col border-b md:border-b-0 md:border-r border-slate-100">
             <div
               onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
