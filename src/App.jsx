@@ -238,8 +238,8 @@ Renvoie le résultat au format JSON.`;
                 <IconImage className="text-white" size={24} />
               </div>
               <div className="flex flex-col">
-                <h1 className="text-xl font-black tracking-tight text-slate-800">Assistant Accessibilité</h1>
-                <p className="text-slate-400 text-[9px] font-bold tracking-[0.2em] uppercase">Images & Schémas</p>
+                <h1 className="text-xl font-black tracking-tight text-slate-800">Assistant d'accessibilité des images</h1>
+                <p className="text-slate-400 text-[9px] font-bold tracking-[0.2em]">Générez des alternatives et descriptions</p>
               </div>
             </div>
           </header>
@@ -260,7 +260,7 @@ Renvoie le résultat au format JSON.`;
               <div className="w-full space-y-6">
                 <div className="relative group cursor-pointer" onClick={() => document.getElementById('file-input').click()}>
                   <img src={previewUrl} alt="Preview" className="max-h-[320px] mx-auto rounded-2xl shadow-lg border border-slate-50" />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl text-white text-xs font-bold uppercase tracking-widest">
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl text-white text-xs font-bold tracking-widest">
                     Changer l'image
                   </div>
                 </div>
@@ -268,7 +268,7 @@ Renvoie le résultat au format JSON.`;
                 <button
                   onClick={(e) => { e.stopPropagation(); processImage(file); }}
                   disabled={loading}
-                  className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-2xl shadow-xl shadow-indigo-100 disabled:bg-slate-200 disabled:shadow-none transition-all flex items-center justify-center gap-3 text-xs uppercase tracking-widest"
+                  className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-2xl shadow-xl shadow-indigo-100 disabled:bg-slate-200 disabled:shadow-none transition-all flex items-center justify-center gap-3 text-xs tracking-widest"
                 >
                   {loading ? <IconLoader size={18} /> : <IconWand size={18} />}
                   {loading ? "Analyse en cours..." : "Lancer l'analyse"}
@@ -300,7 +300,7 @@ Renvoie le résultat au format JSON.`;
           {result ? (
             <div className="w-full animate-fade-slide-up-delayed space-y-6">
               <div className="flex items-center gap-3 mb-4">
-                <span className={`px-4 py-1.5 rounded-full text-[9px] font-black tracking-widest uppercase shadow-sm border ${
+                <span className={`px-4 py-1.5 rounded-full text-[9px] font-black tracking-widest shadow-sm border ${
                   result.complexite === 'SIMPLE' 
                     ? 'bg-emerald-50 text-emerald-600 border-emerald-100' 
                     : 'bg-indigo-50 text-indigo-600 border-indigo-100'
@@ -312,7 +312,7 @@ Renvoie le résultat au format JSON.`;
               <div className="bg-white rounded-[2rem] shadow-sm border border-slate-100 divide-y divide-slate-50">
                 <div className="p-8 space-y-2 text-left">
                   <div className="flex justify-between items-center mb-1">
-                    <h3 className="text-[10px] font-black text-slate-300 uppercase tracking-widest">1. Titre généré</h3>
+                    <h3 className="text-[10px] font-black text-slate-300 tracking-widest">1. Titre généré</h3>
                     <CopyButton text={result.titre} />
                   </div>
                   <p className="text-base font-extrabold text-slate-800">{result.titre}</p>
@@ -320,7 +320,7 @@ Renvoie le résultat au format JSON.`;
 
                 <div className="p-8 space-y-2 text-left">
                   <div className="flex justify-between items-center mb-1">
-                    <h3 className="text-[10px] font-black text-slate-300 uppercase tracking-widest">2. Alternative (alt)</h3>
+                    <h3 className="text-[10px] font-black text-slate-300 tracking-widest">2. Alternative (alt)</h3>
                     <CopyButton text={result.alternative_textuelle} />
                   </div>
                   <p className="text-sm text-slate-600 font-medium italic leading-relaxed">"{result.alternative_textuelle}"</p>
@@ -333,7 +333,7 @@ Renvoie le résultat au format JSON.`;
 
                 <div className="p-8 space-y-3 text-left">
                   <div className="flex justify-between items-center mb-1">
-                    <h3 className="text-[10px] font-black text-slate-300 uppercase tracking-widest">3. Description détaillée</h3>
+                    <h3 className="text-[10px] font-black text-slate-300 tracking-widest">3. Description détaillée</h3>
                     <CopyButton text={result.description_detaillee} />
                   </div>
                   <div className="p-5 bg-slate-50/50 rounded-2xl prose prose-slate prose-sm max-w-none text-slate-600 whitespace-pre-wrap leading-relaxed text-xs">
@@ -347,7 +347,7 @@ Renvoie le résultat au format JSON.`;
               <div className="w-24 h-24 bg-slate-200/50 rounded-[2rem] flex items-center justify-center border-4 border-white shadow-inner">
                 <IconImage size={48} className="text-slate-400" />
               </div>
-              <p className="text-xs font-black uppercase tracking-[0.4em] text-slate-400">Maxime Lyon</p>
+              <p className="text-xs font-black uppercase tracking-[0.4em] text-slate-200">Maxime Lyon</p>
             </div>
           )}
         </div>
