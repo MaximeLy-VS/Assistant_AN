@@ -245,7 +245,7 @@ Renvoie le résultat au format JSON.`;
               ) : (
                 <div className="text-center py-12 space-y-4">
                   <Upload className="mx-auto text-slate-400" size={48} />
-                  <p className="text-slate-500">Glissez une image ou cliquez ici</p>
+                  <p className="text-slate-500">Glissez une image, cliquez ici ou collez (Ctrl+V) depuis votre presse papier</p>
                 </div>
               )}
             </div>
@@ -294,7 +294,7 @@ Renvoie le résultat au format JSON.`;
               </div>
             ) : !loading && (
               <div className="h-full min-h-[300px] border-2 border-dashed border-slate-200 rounded-3xl flex items-center justify-center text-slate-400 italic">
-                En attente d'analyse...
+                En attente d'analyse ...
               </div>
             )}
           </div>
