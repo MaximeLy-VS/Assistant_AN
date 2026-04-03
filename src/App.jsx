@@ -190,8 +190,8 @@ Renvoie le résultat au format JSON.`;
           <p className="text-slate-600 max-w-2xl mx-auto">Générez des alternatives et descriptions conformes au RGAA et à vos guides internes.</p>
         </header>
 
-        <div className="grid md:grid-cols-12 gap-8 items-start">
-          <div className="md:col-span-5 space-y-4">
+        <div className="max-w-4xl w-full bg-white rounded-[2.5rem] shadow-2xl shadow-indigo-100 overflow-hidden flex flex-col md:flex-row border border-slate-100 animate-fade-slide-up">
+          <div className="w-full md:w-1/2 bg-slate-50/50 p-10 flex flex-col border-b md:border-b-0 md:border-r border-slate-100">
             <div
               onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
               onDragLeave={() => setIsDragging(false)}
@@ -233,7 +233,7 @@ Renvoie le résultat au format JSON.`;
             {error && <div className="p-4 bg-red-50 text-red-700 rounded-xl border border-red-100 text-sm flex gap-2"><AlertCircle size={16} />{error}</div>}
           </div>
 
-          <div className="md:col-span-7">
+          <div className="w-full md:w-1/2 p-12 flex flex-col items-center justify-center bg-white">
             {result ? (
               <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden divide-y divide-slate-100">
                 <div className="p-6 bg-slate-50/50 flex justify-between items-center">
