@@ -197,7 +197,7 @@ Renvoie le résultat au format JSON.`;
       }
     };
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemma-4-31b:generateContent?key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemma-4-31b-it:generateContent?key=${apiKey}`;
 
     for (let i = 0; i < maxRetries; i++) {
       try {
